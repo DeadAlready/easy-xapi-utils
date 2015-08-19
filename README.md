@@ -14,6 +14,22 @@ Express middleware for checking if request is logged in and has a certain role.
 	
 	app.use(eUtils.isLoggedIn('admin'));
 	
+## hasRole(role: string)
+  
+Express middleware for checking if request is has specific role. Does not check loggedIn status
+
+	var eUtils = require('easy-xapi-utils');
+	app.use(eUtils.hasRole('guest'));
+
+
+## isLoggedOut()
+  
+Express middleware for checking if request is logged out and has role guest.
+
+	var eUtils = require('easy-xapi-utils');
+	app.use(eUtils.isLoggedOut());
+  
+	
 ## Licence
 
 The MIT License (MIT)

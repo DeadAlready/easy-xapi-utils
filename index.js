@@ -17,4 +17,32 @@ function isLoggedIn(role) {
     };
 }
 exports.isLoggedIn = isLoggedIn;
+function hasRole(role) {
+    return function checkRole(req, res, next) {
+        if (!req.info) {
+            res.fail('Unauthorized', 401);
+            return;
+        }
+        if (req.info.role !== role) {
+            res.fail('Forbidden', 403);
+            return;
+        }
+        next();
+    };
+}
+exports.hasRole = hasRole;
+function isLoggedOut() {
+    return function checkLoggedOut(req, res, next) {
+        if (!req.info) {
+            res.fail('Unauthorized', 401);
+            return;
+        }
+        if (req.info.role !== 'guest' || req.info.isLoggedIn) {
+            res.fail('Forbidden', 403);
+            return;
+        }
+        next();
+    };
+}
+exports.isLoggedOut = isLoggedOut;
 //# sourceMappingURL=index.js.map
