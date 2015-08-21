@@ -18,12 +18,15 @@ function isLoggedIn(role) {
 }
 exports.isLoggedIn = isLoggedIn;
 function hasRole(role) {
+    if (typeof role !== 'string' && !Array.isArray(role)) {
+        throw new TypeError('Role has to be string or string[]');
+    }
     return function checkRole(req, res, next) {
         if (!req.info) {
             res.fail('Unauthorized', 401);
             return;
         }
-        if (req.info.role !== role) {
+        if (typeof role === 'string' && req.info.role !== role || role.indexOf(req.info.role) === -1) {
             res.fail('Forbidden', 403);
             return;
         }

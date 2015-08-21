@@ -14,13 +14,18 @@ Express middleware for checking if request is logged in and has a certain role.
 	
 	app.use(eUtils.isLoggedIn('admin'));
 	
-## hasRole(role: string)
+## hasRole(role: string | string[])
   
 Express middleware for checking if request is has specific role. Does not check loggedIn status
 
 	var eUtils = require('easy-xapi-utils');
 	app.use(eUtils.hasRole('guest'));
 
+or
+
+	var eUtils = require('easy-xapi-utils');
+	app.use(eUtils.hasRole(['guest', 'user']));
+	
 
 ## isLoggedOut()
   

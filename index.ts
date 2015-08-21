@@ -22,13 +22,16 @@ export function isLoggedIn(role?: string): express.RequestHandler {
     }
 }
 
-export function hasRole(role): express.RequestHandler {
+export function hasRole(role?: string | string[]): express.RequestHandler {
+    if(typeof role !== 'string' && !Array.isArray(role)) {
+        throw new TypeError('Role has to be string or string[]');
+    }
     return function checkRole(req:express.Request, res:express.Response, next: Function) {
         if(!req.info) {
             res.fail('Unauthorized', 401);
             return;
         }
-        if(req.info.role !== role) {
+        if(typeof role === 'string' && req.info.role !== role || role.indexOf(req.info.role) === -1) {
             res.fail('Forbidden', 403);
             return;
         }
