@@ -3,13 +3,22 @@
  */
 /// <reference path='typings/tsd.d.ts' />
 'use strict';
-function isLoggedIn(role) {
+function compareRole(role, compare, reverse) {
+    if (Array.isArray(compare)) {
+        return reverse ? compare.indexOf(role) === -1 : compare.indexOf(role) !== -1;
+    }
+    return reverse ? compare !== role : compare === role;
+}
+function isLoggedIn(role, reverse) {
+    if (role && typeof role !== 'string' && !Array.isArray(role)) {
+        throw new TypeError('Role has to be string or string[]');
+    }
     return function checkLoggedIn(req, res, next) {
         if (!req.info || !req.info.isLoggedIn) {
             res.fail('Unauthorized', 401);
             return;
         }
-        if (role && req.info.role !== role) {
+        if (role && !compareRole(req.info.role, role, reverse)) {
             res.fail('Forbidden', 403);
             return;
         }
@@ -17,7 +26,7 @@ function isLoggedIn(role) {
     };
 }
 exports.isLoggedIn = isLoggedIn;
-function hasRole(role) {
+function hasRole(role, reverse) {
     if (typeof role !== 'string' && !Array.isArray(role)) {
         throw new TypeError('Role has to be string or string[]');
     }
@@ -26,7 +35,7 @@ function hasRole(role) {
             res.fail('Unauthorized', 401);
             return;
         }
-        if (typeof role === 'string' && req.info.role !== role || role.indexOf(req.info.role) === -1) {
+        if (!compareRole(req.info.role, role, reverse)) {
             res.fail('Forbidden', 403);
             return;
         }

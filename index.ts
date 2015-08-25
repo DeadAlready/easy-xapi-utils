@@ -8,13 +8,23 @@
 
 import express = require('express');
 
-export function isLoggedIn(role?: string): express.RequestHandler {
+function compareRole(role:string, compare:string | string[], reverse?: boolean):boolean {
+    if(Array.isArray(compare)) {
+        return reverse ? compare.indexOf(role) === -1 : compare.indexOf(role) !== -1;
+    }
+    return reverse ? compare !== role : compare === role;
+}
+
+export function isLoggedIn(role?: string | string[], reverse?: boolean): express.RequestHandler {
+    if(role && typeof role !== 'string' && !Array.isArray(role)) {
+        throw new TypeError('Role has to be string or string[]');
+    }
     return function checkLoggedIn(req:express.Request, res:express.Response, next: Function) {
         if(!req.info || !req.info.isLoggedIn) {
             res.fail('Unauthorized', 401);
             return;
         }
-        if(role && req.info.role !== role) {
+        if(role && !compareRole(req.info.role, role, reverse)) {
             res.fail('Forbidden', 403);
             return;
         }
@@ -22,7 +32,7 @@ export function isLoggedIn(role?: string): express.RequestHandler {
     }
 }
 
-export function hasRole(role?: string | string[]): express.RequestHandler {
+export function hasRole(role: string | string[], reverse?: boolean): express.RequestHandler {
     if(typeof role !== 'string' && !Array.isArray(role)) {
         throw new TypeError('Role has to be string or string[]');
     }
@@ -31,7 +41,7 @@ export function hasRole(role?: string | string[]): express.RequestHandler {
             res.fail('Unauthorized', 401);
             return;
         }
-        if(typeof role === 'string' && req.info.role !== role || role.indexOf(req.info.role) === -1) {
+        if(!compareRole(req.info.role, role, reverse)) {
             res.fail('Forbidden', 403);
             return;
         }
