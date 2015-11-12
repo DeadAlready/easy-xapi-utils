@@ -57,4 +57,7 @@ function isLoggedOut() {
     };
 }
 exports.isLoggedOut = isLoggedOut;
+var RBAC = require('./lib/rbac');
+exports.setRbac = RBAC.setRbac;
+exports.rbac = RBAC.rbac;
 //# sourceMappingURL=index.js.map

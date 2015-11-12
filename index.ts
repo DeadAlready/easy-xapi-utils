@@ -62,3 +62,8 @@ export function isLoggedOut(): express.RequestHandler {
         next();
     }
 }
+
+import RBAC = require('./lib/rbac');
+
+export var setRbac = RBAC.setRbac;
+export var rbac = RBAC.rbac;

@@ -33,7 +33,29 @@ Express middleware for checking if request is logged out and has role guest.
 
 	var eUtils = require('easy-xapi-utils');
 	app.use(eUtils.isLoggedOut());
+	
+## setRbac(id, opts) 
+
+Function for createing and setting internal RBAC object. The opts are described in [`easy-rbac`](https://github.com/deadalready/easy-rbac).
   
+## rbac(id) 
+
+Function for retrieving a previously set RBAC object for use as middleware. 
+
+	var eUtils = require('easy-xapi-utils');
+	eUtils.setRbac('auth', {
+		guest: {
+			can: ['account:create', 'account:recover']
+		},
+		user: {
+			can: ['password:change']
+		}
+	});
+	
+	app.post('/change-password',
+		eUtils.rbac('auth').can('password:change'),
+		controller.changePassword);
+	
 	
 ## Licence
 
