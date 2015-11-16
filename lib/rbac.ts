@@ -31,6 +31,10 @@ class RBACWrap {
                     return;
                 }
 
+                if(!req.info.uid) {
+                    res.fail('Unauthorized', 401);
+                    return;
+                }
                 res.fail('Forbidden', 403);
             };
             if(typeof params === 'function') {
